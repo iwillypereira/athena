@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from '@/app.controller';
 import { AppService } from '@/app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TicketsModule } from './tickets/tickets.module';
 import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
@@ -17,7 +18,8 @@ import { MongooseModule } from '@nestjs/mongoose';
         autoIndex: process.env.NODE_ENV !== 'production', // Habilitar índices solo en desarrollo
       }),
       inject: [ConfigService],
-    })
+    }),
+    TicketsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
