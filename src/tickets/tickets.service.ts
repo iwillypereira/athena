@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Ticket, TicketDocument } from '@/tickets/entities/ticket.entity';
 import { CreateTicketDto } from '@/tickets/dto/create-ticket.dto';
 import { UpdateTicketDto } from '@/tickets/dto/update-ticket.dto';
+import { User } from '@/users/entities/user.entity';
 
 @Injectable()
 export class TicketService {
@@ -29,17 +30,53 @@ export class TicketService {
   // ----------------------------------------------------
   // 🟡 READ (GET ALL)
   // ----------------------------------------------------
-  async findAll(): Promise<Ticket[]> {
+  async findAll(): Promise<any> {
     // Usamos .lean() para un mejor performance en lecturas, 
     // ya que no necesitamos manipular los objetos Document de Mongoose.
-    return this.ticketModel.find().lean().exec();
+    return this.ticketModel.find()
+      .select('ticketNumber shortText')
+      .populate<{ createdBy: User }>("createdBy", 'firstName lastName email')
+      .populate<{ assignedToFunctional: User }>("assignedToFunctional", 'firstName lastName email')
+      .populate<{ assignedToTechnical: User }>("assignedToTechnical", 'firstName lastName email')
+      .lean()
+      .transform((docs) => {
+        if (!docs) return null;
+        return docs.map(doc => ({
+          ...doc,
+          createdBy: doc.createdBy ? `${doc.createdBy.firstName} ${doc.createdBy.lastName}` : null,
+          assignedToTechnical: doc.assignedToTechnical ? `${doc.assignedToTechnical.firstName} ${doc.assignedToTechnical.lastName}` : null,
+          assignedToFunctional: doc.assignedToFunctional ? `${doc.assignedToFunctional.firstName} ${doc.assignedToFunctional.lastName}` : null
+        }))
+      })
+      .exec();
   }
 
   // ----------------------------------------------------
   // 🟡 READ (GET ONE by ID)
   // ----------------------------------------------------
-  async findOne(id: string): Promise<Ticket> {
-    const ticket = await this.ticketModel.findById(id).lean().exec();
+  async findOne(id: string): Promise<any> {
+    // const ticket = await this.ticketModel.findById(id).lean().exec();
+
+    const ticket = await this.ticketModel
+      .findById(id)
+      .select('ticketNumber shortText')
+      .populate<{ createdBy: User }>("createdBy", 'firstName lastName email')
+      .populate<{ assignedToFunctional: User }>("assignedToFunctional", 'firstName lastName email')
+      .populate<{ assignedToTechnical: User }>("assignedToTechnical", 'firstName lastName email')
+      .lean()
+      .transform((doc) => {
+        if (!doc) return null;
+
+        // Transformar datos para el frontend
+        return {
+          ...doc,
+          createdBy: doc.createdBy ? `${doc.createdBy.firstName} ${doc.createdBy.lastName}` : null,
+          assignedToTechnical: doc.assignedToTechnical ? `${doc.assignedToTechnical.firstName} ${doc.assignedToTechnical.lastName}` : null,
+          assignedToFunctional: doc.assignedToFunctional ? `${doc.assignedToFunctional.firstName} ${doc.assignedToFunctional.lastName}` : null
+        };
+      })
+      .exec();
+
 
     if (!ticket) {
       // Usar NotFoundException es la mejor práctica en NestJS

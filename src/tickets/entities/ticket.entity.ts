@@ -1,5 +1,6 @@
+import { User } from '@/users/entities/user.entity';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
 // --- ENUMS para Seguridad de Tipos (Reutilizados) ---
 export enum TicketStatus {
@@ -50,17 +51,20 @@ export class Ticket {
     })
     priorityKey: TicketPriority; // Usamos el Enum para tipado
 
-    @Prop({ required: true, type: String })
-    assignedToTechnical: string;
 
-    @Prop({ type: String })
-    assignedToFunctional?: string;
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
+    assignedToTechnical: mongoose.Types.ObjectId;
+
+
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
+    assignedToFunctional: mongoose.Types.ObjectId;
 
     @Prop({ type: String })
     sapModule?: string;
 
-    @Prop({ required: true, type: String })
-    createdBy: string;
+    // @Prop({ type: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } })
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
+    createdBy: mongoose.Types.ObjectId;
 
     @Prop({ type: Date, required: false })
     closedAt?: Date;
