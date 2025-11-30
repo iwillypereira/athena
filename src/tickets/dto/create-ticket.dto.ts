@@ -1,11 +1,11 @@
 import { IsString, IsNotEmpty, IsIn, IsOptional, Matches, IsISO8601 } from 'class-validator';
-import { TicketStatus, TicketPriority } from '../entities/ticket.entity';
+import { TicketStatus, TicketPriority } from '@/tickets/entities/ticket.entity';
 export class CreateTicketDto {
 
     @IsNotEmpty()
     @IsString()
     // Patrón para forzar que sea solo números (opcional, pero útil para ticketNumber)
-    // @Matches(/^[0-9]+$/, { message: 'ticketNumber debe contener solo números' })
+    @Matches(/^[0-9]+$/, { message: 'ticketNumber debe contener solo números' })
     ticketNumber: string;
 
     @IsNotEmpty()

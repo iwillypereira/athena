@@ -1,10 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-
-import { Ticket, TicketDocument } from './entities/ticket.entity';
-import { CreateTicketDto } from './dto/create-ticket.dto';
-import { UpdateTicketDto } from './dto/update-ticket.dto';
+import { Ticket, TicketDocument } from '@/tickets/entities/ticket.entity';
+import { CreateTicketDto } from '@/tickets/dto/create-ticket.dto';
+import { UpdateTicketDto } from '@/tickets/dto/update-ticket.dto';
 
 @Injectable()
 export class TicketService {

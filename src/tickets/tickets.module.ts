@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { TicketService } from './tickets.service';
-import { TicketsController } from './tickets.controller';
+import { TicketService } from '@/tickets/tickets.service';
+import { TicketsController } from '@/tickets/tickets.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Ticket, TicketSchema } from './entities/ticket.entity';
+import { Ticket, TicketSchema } from '@/tickets/entities/ticket.entity';
 
 @Module({
   imports: [
