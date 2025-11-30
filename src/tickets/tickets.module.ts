@@ -6,11 +6,10 @@ import { Ticket, TicketSchema } from '@/tickets/entities/ticket.entity';
 
 @Module({
   imports: [
-    // Registra el esquema 'Ticket' con Mongoose para que el modelo pueda ser inyectado.
     MongooseModule.forFeature([
       {
-        name: Ticket.name, // Usa el nombre de la clase para el registro
-        schema: TicketSchema, // Usa el esquema de Mongoose
+        name: Ticket.name,
+        schema: TicketSchema,
       },
     ]),
   ],
